@@ -98,6 +98,23 @@ export default function App() {
 
       {/* Main Content Area */}
       <div className="flex-1 flex overflow-hidden">
+        {/* AI Assistant Column */}
+        <motion.div
+          initial={{ x: -100, opacity: 0 }}
+          animate={{
+            x: sidebarOpen ? 0 : -400,
+            opacity: sidebarOpen ? 1 : 0
+          }}
+          transition={{ type: 'spring', damping: 25, stiffness: 200 }}
+          className="w-96 border-r border-border bg-background shrink-0 overflow-hidden"
+        >
+          <AIAssistant
+            key={resetKey}
+            scene={scene}
+            onSceneAction={handleSceneAction}
+          />
+        </motion.div>
+
         {/* Editor Column */}
         <motion.div
           initial={{ opacity: 0 }}
@@ -117,29 +134,12 @@ export default function App() {
           />
         </motion.div>
 
-        {/* AI Assistant Column */}
-        <motion.div
-          initial={{ x: 100, opacity: 0 }}
-          animate={{
-            x: sidebarOpen ? 0 : 400,
-            opacity: sidebarOpen ? 1 : 0
-          }}
-          transition={{ type: 'spring', damping: 25, stiffness: 200 }}
-          className="w-96 border-l border-border bg-background shrink-0 overflow-hidden"
-        >
-          <AIAssistant
-            key={resetKey}
-            scene={scene}
-            onSceneAction={handleSceneAction}
-          />
-        </motion.div>
-
         {/* Sidebar Toggle */}
         <Button
           variant="outline"
           size="icon"
           onClick={() => setSidebarOpen(!sidebarOpen)}
-          className="absolute right-4 top-20 z-40 rounded-full shadow-lg"
+          className="absolute left-4 top-20 z-40 rounded-full shadow-lg"
           style={{
             backgroundColor: sidebarOpen ? 'var(--background)' : '#0052CC',
             color: sidebarOpen ? 'var(--foreground)' : 'white'
