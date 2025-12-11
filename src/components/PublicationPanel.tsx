@@ -1,5 +1,5 @@
 import { useState } from 'react';
-import { motion } from 'motion/react';
+import { motion, AnimatePresence } from 'motion/react';
 import {
   CheckSquare,
   FileText,
@@ -18,7 +18,10 @@ import {
   Settings,
   X,
   Lock,
+  ChevronLeft,
+  ChevronRight,
 } from 'lucide-react';
+import { Button } from './ui/button';
 
 interface MediaItem {
   id: string;
@@ -28,7 +31,12 @@ interface MediaItem {
   source: string;
 }
 
-export function PublicationPanel() {
+interface PublicationPanelProps {
+  collapsed?: boolean;
+  onToggle?: () => void;
+}
+
+export function PublicationPanel({ collapsed = false, onToggle }: PublicationPanelProps) {
   const [license, setLicense] = useState('Company Licence');
   const [source, setSource] = useState('Reuters');
   const [authors, setAuthors] = useState('John Doe');
@@ -77,13 +85,28 @@ export function PublicationPanel() {
   ];
 
   return (
-    <div className="flex h-full bg-background">
+    <div className="flex h-full bg-background relative">
       {/* Left Sidebar with Icons */}
       <motion.div
         initial={{ x: -20, opacity: 0 }}
         animate={{ x: 0, opacity: 1 }}
         className="w-20 border-r border-border bg-background flex flex-col items-center py-4 gap-2 shrink-0"
       >
+        {/* Toggle Button at Top */}
+        <button
+          onClick={onToggle}
+          className="w-12 h-12 flex items-center justify-center rounded-lg hover:bg-muted transition-colors mb-2"
+          title={collapsed ? "Expand panel" : "Collapse panel"}
+        >
+          {collapsed ? (
+            <ChevronLeft className="h-5 w-5 text-foreground" strokeWidth={1.5} />
+          ) : (
+            <ChevronRight className="h-5 w-5 text-foreground" strokeWidth={1.5} />
+          )}
+        </button>
+
+        <div className="w-10 h-px bg-border mb-2" />
+
         {sidebarIcons.map((item, idx) => (
           <div key={idx} className="relative group">
             <button
@@ -119,7 +142,15 @@ export function PublicationPanel() {
       </motion.div>
 
       {/* Main Content Area */}
-      <div className="flex-1 overflow-y-auto">
+      <AnimatePresence>
+        {!collapsed && (
+          <motion.div
+            initial={{ width: 0, opacity: 0 }}
+            animate={{ width: 640, opacity: 1 }}
+            exit={{ width: 0, opacity: 0 }}
+            transition={{ type: 'spring', damping: 25, stiffness: 200 }}
+            className="overflow-y-auto"
+          >
         <motion.div
           initial={{ opacity: 0, y: 20 }}
           animate={{ opacity: 1, y: 0 }}
@@ -363,7 +394,9 @@ export function PublicationPanel() {
             </div>
           </div>
         </motion.div>
-      </div>
+          </motion.div>
+        )}
+      </AnimatePresence>
     </div>
   );
 }

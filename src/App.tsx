@@ -16,9 +16,9 @@ export default function App() {
   const [showImageGallery, setShowImageGallery] = useState(false);
   const [selectedImage, setSelectedImage] = useState<string>();
   const [sidebarOpen, setSidebarOpen] = useState(true);
+  const [rightSidebarOpen, setRightSidebarOpen] = useState(true);
   const [resetKey, setResetKey] = useState(0);
   const [editor, setEditor] = useState<any>(null);
-  const [view, setView] = useState<'editor' | 'publication'>('editor');
 
   const totalScenes = 5;
 
@@ -81,17 +81,6 @@ export default function App() {
         </div>
 
         <div className="flex items-center gap-2">
-          {view === 'publication' && (
-            <Button
-              variant="ghost"
-              size="sm"
-              onClick={() => setView('editor')}
-              className="gap-2"
-            >
-              <ArrowLeft className="h-4 w-4" />
-              Back to Editor
-            </Button>
-          )}
           <Button variant="ghost" size="sm">
             Save Draft
           </Button>
@@ -99,7 +88,6 @@ export default function App() {
             size="sm"
             style={{ backgroundColor: '#0052CC' }}
             className="text-white hover:opacity-90"
-            onClick={() => setView('publication')}
           >
             Publish
           </Button>
@@ -112,62 +100,73 @@ export default function App() {
 
       {/* Main Content Area */}
       <div className="flex-1 flex overflow-hidden">
-        {view === 'editor' ? (
-          <>
-            {/* AI Assistant Column */}
-            <motion.div
-              initial={{ x: -100, opacity: 0 }}
-              animate={{
-                x: sidebarOpen ? 0 : -400,
-                opacity: sidebarOpen ? 1 : 0
-              }}
-              transition={{ type: 'spring', damping: 25, stiffness: 200 }}
-              className="w-96 border-r border-border bg-background shrink-0 overflow-hidden"
-            >
-              <AIAssistant
-                key={resetKey}
-                scene={scene}
-                onSceneAction={handleSceneAction}
-              />
-            </motion.div>
+        {/* AI Assistant Column */}
+        <motion.div
+          initial={{ x: -100, opacity: 0 }}
+          animate={{
+            x: sidebarOpen ? 0 : -400,
+            opacity: sidebarOpen ? 1 : 0
+          }}
+          transition={{ type: 'spring', damping: 25, stiffness: 200 }}
+          className="w-96 border-r border-border bg-background shrink-0 overflow-hidden"
+        >
+          <AIAssistant
+            key={resetKey}
+            scene={scene}
+            onSceneAction={handleSceneAction}
+          />
+        </motion.div>
 
-            {/* Editor Column */}
-            <motion.div
-              initial={{ opacity: 0 }}
-              animate={{ opacity: 1 }}
-              transition={{ delay: 0.2 }}
-              className="flex-1 flex flex-col bg-background overflow-hidden"
-            >
-              <EditorToolbar editor={editor} />
-              <TiptapEditor
-                scene={scene}
-                selectedImage={selectedImage}
-                onSceneProgress={handleNextScene}
-                onEditorReady={setEditor}
-                onRequestImage={() => setShowImageGallery(true)}
-                sidebarOpen={sidebarOpen}
-                imageGalleryOpen={showImageGallery}
-              />
-            </motion.div>
+        {/* Editor Column */}
+        <motion.div
+          initial={{ opacity: 0 }}
+          animate={{ opacity: 1 }}
+          transition={{ delay: 0.2 }}
+          className="flex-1 flex flex-col bg-background overflow-hidden"
+        >
+          <EditorToolbar editor={editor} />
+          <TiptapEditor
+            scene={scene}
+            selectedImage={selectedImage}
+            onSceneProgress={handleNextScene}
+            onEditorReady={setEditor}
+            onRequestImage={() => setShowImageGallery(true)}
+            sidebarOpen={sidebarOpen}
+            imageGalleryOpen={showImageGallery}
+          />
+        </motion.div>
 
-            {/* Sidebar Toggle */}
-            <Button
-              variant="outline"
-              size="icon"
-              onClick={() => setSidebarOpen(!sidebarOpen)}
-              className="absolute top-20 z-40 rounded-full shadow-lg transition-all duration-300"
-              style={{
-                left: sidebarOpen ? '360px' : '16px',
-                backgroundColor: sidebarOpen ? 'var(--background)' : '#0052CC',
-                color: sidebarOpen ? 'var(--foreground)' : 'white'
-              }}
-            >
-              {sidebarOpen ? <X className="h-4 w-4" /> : <Menu className="h-4 w-4" />}
-            </Button>
-          </>
-        ) : (
-          <PublicationPanel />
-        )}
+        {/* Publication Panel Column */}
+        <motion.div
+          initial={{ x: 100, opacity: 0 }}
+          animate={{
+            x: 0,
+            opacity: 1,
+            width: rightSidebarOpen ? 'auto' : '80px'
+          }}
+          transition={{ type: 'spring', damping: 25, stiffness: 200 }}
+          className="border-l border-border bg-background shrink-0 overflow-hidden"
+        >
+          <PublicationPanel
+            collapsed={!rightSidebarOpen}
+            onToggle={() => setRightSidebarOpen(!rightSidebarOpen)}
+          />
+        </motion.div>
+
+        {/* Left Sidebar Toggle */}
+        <Button
+          variant="outline"
+          size="icon"
+          onClick={() => setSidebarOpen(!sidebarOpen)}
+          className="absolute top-20 z-40 rounded-full shadow-lg transition-all duration-300"
+          style={{
+            left: sidebarOpen ? '360px' : '16px',
+            backgroundColor: sidebarOpen ? 'var(--background)' : '#0052CC',
+            color: sidebarOpen ? 'var(--foreground)' : 'white'
+          }}
+        >
+          {sidebarOpen ? <X className="h-4 w-4" /> : <Menu className="h-4 w-4" />}
+        </Button>
       </div>
 
       {/* Image Gallery Modal */}
