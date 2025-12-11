@@ -139,10 +139,11 @@ export default function App() {
           variant="outline"
           size="icon"
           onClick={() => setSidebarOpen(!sidebarOpen)}
-          className="absolute left-4 top-20 z-40 rounded-full shadow-lg"
+          className="absolute left-[360px] top-20 z-40 rounded-full shadow-lg transition-all"
           style={{
             backgroundColor: sidebarOpen ? 'var(--background)' : '#0052CC',
-            color: sidebarOpen ? 'var(--foreground)' : 'white'
+            color: sidebarOpen ? 'var(--foreground)' : 'white',
+            transform: sidebarOpen ? 'translateX(0)' : 'translateX(-344px)'
           }}
         >
           {sidebarOpen ? <X className="h-4 w-4" /> : <Menu className="h-4 w-4" />}
