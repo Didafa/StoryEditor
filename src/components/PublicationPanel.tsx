@@ -146,7 +146,7 @@ export function PublicationPanel({ collapsed = false, onToggle }: PublicationPan
         {!collapsed && (
           <motion.div
             initial={{ width: 0, opacity: 0 }}
-            animate={{ width: 640, opacity: 1 }}
+            animate={{ width: 360, opacity: 1 }}
             exit={{ width: 0, opacity: 0 }}
             transition={{ type: 'spring', damping: 25, stiffness: 200 }}
             className="overflow-y-auto"
@@ -155,7 +155,7 @@ export function PublicationPanel({ collapsed = false, onToggle }: PublicationPan
           initial={{ opacity: 0, y: 20 }}
           animate={{ opacity: 1, y: 0 }}
           transition={{ delay: 0.1 }}
-          className="max-w-2xl mx-auto py-12 px-8"
+          className="py-12 px-6"
         >
           {/* Header */}
           <h1
